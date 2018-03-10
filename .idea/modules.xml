@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/selenium-complete.iml" filepath="$PROJECT_DIR$/selenium-complete.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/selenium-complete_main.iml" filepath="$PROJECT_DIR$/.idea/modules/selenium-complete_main.iml" group="selenium-complete" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/selenium-complete_test.iml" filepath="$PROJECT_DIR$/.idea/modules/selenium-complete_test.iml" group="selenium-complete" />
+    </modules>
+  </component>
+</project>
