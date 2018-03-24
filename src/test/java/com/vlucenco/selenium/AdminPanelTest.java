@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class AdminPanelTest extends TestBase {
 
     private static final String COUNTRIES_PAGE_URL = "http://localhost/litecart/admin/?app=countries&doc=countries";
+    private static final String GEO_ZONES_PAGE_URL = "http://localhost/litecart/admin/?app=geo_zones&doc=geo_zones";
 
     private By menuItemLocator = By.id("app-");
     private By subMenuItemLocator = By.cssSelector("#app-.selected li");
@@ -48,14 +49,15 @@ public class AdminPanelTest extends TestBase {
 
     @Test
     public void testCountriesAndTheirZonesAreSortedAlphabetically() {
-        List<WebElement> countryRows = getCountryRows();
+        List<WebElement> countryRows = goToPageAndGetCountries(COUNTRIES_PAGE_URL, By.xpath("//*[@class='row']"));
         List<String> actuallySortedCountries = new ArrayList<>();
 
         for (int row = 0; row < countryRows.size(); row++) {
             if (countryHasZones(countryRows.get(row))) {
-                verifyCountryZonesSorting(countryRows, row);
+                countryRows.get(row).findElement(By.tagName("a")).click();
+                getCountryZonesAndVerifySorting(By.xpath("//td[3]/input[@type='hidden']/.."));
 
-                countryRows = getCountryRows();
+                countryRows = goToPageAndGetCountries(COUNTRIES_PAGE_URL, By.xpath("//*[@class='row']"));
             } else {
                 String countryName = countryRows.get(row).findElement(By.xpath("./td[5]")).getText();
                 actuallySortedCountries.add(countryName);
@@ -65,9 +67,21 @@ public class AdminPanelTest extends TestBase {
         verifyCollectionSorted(actuallySortedCountries);
     }
 
-    private List<WebElement> getCountryRows() {
-        driver.get(COUNTRIES_PAGE_URL);
-        return findElements(By.xpath("//*[@class='row']"));
+    @Test
+    public void testGeoZonesAreSortedAlphabetically() {
+        List<WebElement> countries;
+        int i = 0;
+        do {
+            countries = goToPageAndGetCountries(GEO_ZONES_PAGE_URL, By.xpath("//td[3]/a"));
+            countries.get(i).click();
+            getCountryZonesAndVerifySorting(By.xpath("//td[3]/select/option[@selected]"));
+            i++;
+        } while (i < countries.size());
+    }
+
+    private List<WebElement> goToPageAndGetCountries(String page, By locator) {
+        driver.get(page);
+        return findElements(locator);
     }
 
     private boolean countryHasZones(WebElement element) {
@@ -79,9 +93,8 @@ public class AdminPanelTest extends TestBase {
         }
     }
 
-    private void verifyCountryZonesSorting(List<WebElement> countryRows, int row) {
-        countryRows.get(row).findElement(By.tagName("a")).click();
-        List<WebElement> zones = findElements(By.xpath("//td[3]/input[@type='hidden']/.."));
+    private void getCountryZonesAndVerifySorting(By locator) {
+        List<WebElement> zones = findElements(locator);
         List<String> actuallySortedZones = new ArrayList<>();
         zones.forEach(zone -> actuallySortedZones.add(zone.getText()));
         verifyCollectionSorted(actuallySortedZones);
