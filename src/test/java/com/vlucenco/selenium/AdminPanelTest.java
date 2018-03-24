@@ -9,7 +9,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AdminPanelTest extends TestBase {
 
@@ -33,6 +35,25 @@ public class AdminPanelTest extends TestBase {
                 checkPageHeader(subMenuIndex, subMenuItemLocator);
             }
         }
+    }
+
+    @Test
+    public void testCountriesAlphabeticalSorting() {
+        driver.get("http://localhost/litecart/admin/?app=countries&doc=countries");
+        List<WebElement> elements = findElements(By.xpath("//*[@class='row']/td[5]"));
+
+        List<String> actuallySortedCountries = new ArrayList<>();
+        for (WebElement element : elements) {
+            actuallySortedCountries.add(element.getText());
+        }
+
+        checkCollectionSorted(actuallySortedCountries);
+    }
+
+    private void checkCollectionSorted(List<String> actuallySortedCountries) {
+        List<String> expectedAlphabeticallySortedCountries = new ArrayList<>(actuallySortedCountries)
+                .stream().sorted().collect(Collectors.toList());
+        Assert.assertEquals("Countries sorting not alphabetical", expectedAlphabeticallySortedCountries, actuallySortedCountries);
     }
 
     private void checkPageHeader(int index, By locator) {
