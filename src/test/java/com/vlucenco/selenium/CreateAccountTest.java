@@ -34,15 +34,15 @@ public class CreateAccountTest extends TestBase {
         populateField(By.name("lastname"), "Lucenco");
         populateField(By.name("address1"), "Address 1");
         populateField(By.name("postcode"), "12345");
-        populateField(By.name("city"),"New York");
+        populateField(By.name("city"), "New York");
         click(By.className("selection"));
         click(By.xpath("//li[contains(text(), 'United States')]"));
         click(By.cssSelector("select[name=zone_code]"));
         click(By.cssSelector("select option[value=NY]"));
-        populateField(By.name("email"),emailAddress);
-        populateField(By.name("phone"),"+123456789");
-        populateField(By.name("password"),password);
-        populateField(By.name("confirmed_password"),password);
+        populateField(By.name("email"), emailAddress);
+        populateField(By.name("phone"), "+123456789");
+        populateField(By.name("password"), password);
+        populateField(By.name("confirmed_password"), password);
         click(By.name("create_account"));
     }
 
@@ -51,8 +51,8 @@ public class CreateAccountTest extends TestBase {
     }
 
     private void login(String emailAddress, String password) {
-        populateField(By.name("email"),emailAddress);
-        populateField(By.name("password"),password);
+        populateField(By.name("email"), emailAddress);
+        populateField(By.name("password"), password);
         click(By.name("login"));
     }
 
