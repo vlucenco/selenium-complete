@@ -35,6 +35,7 @@ class TestBase {
     }
 
     void populateField(By fieldLocator, String input) {
+        findElement(fieldLocator).clear();
         findElement(fieldLocator).sendKeys(input);
     }
 }
