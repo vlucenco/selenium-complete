@@ -20,7 +20,7 @@ public class CreateAccountTest extends TestBase {
     }
 
     @Test
-    public void testCreateAccountAndLogin() {
+    public void testCreateAccount() {
         emailAddress = String.format("test+%d@test.com", System.currentTimeMillis());
         submitAccountCreationForm();
         logout();
@@ -29,31 +29,31 @@ public class CreateAccountTest extends TestBase {
     }
 
     private void submitAccountCreationForm() {
-        findElement(By.linkText("New customers click here")).click();
-        findElement(By.name("firstname")).sendKeys("Vitali");
-        findElement(By.name("lastname")).sendKeys("Lucenco");
-        findElement(By.name("address1")).sendKeys("Address 1");
-        findElement(By.name("postcode")).sendKeys("12345");
-        findElement(By.name("city")).sendKeys("New York");
-        findElement(By.className("selection")).click();
-        findElement(By.xpath("//li[contains(text(), 'United States')]")).click();
-        findElement(By.cssSelector("select[name=zone_code]")).click();
-        findElement(By.cssSelector("select option[value=NY]")).click();
-        findElement(By.name("email")).sendKeys(emailAddress);
-        findElement(By.name("phone")).sendKeys("+123456789");
-        findElement(By.name("password")).sendKeys(password);
-        findElement(By.name("confirmed_password")).sendKeys(password);
-        findElement(By.name("create_account")).click();
+        click(By.linkText("New customers click here"));
+        populateField(By.name("firstname"), "Vitali");
+        populateField(By.name("lastname"), "Lucenco");
+        populateField(By.name("address1"), "Address 1");
+        populateField(By.name("postcode"), "12345");
+        populateField(By.name("city"),"New York");
+        click(By.className("selection"));
+        click(By.xpath("//li[contains(text(), 'United States')]"));
+        click(By.cssSelector("select[name=zone_code]"));
+        click(By.cssSelector("select option[value=NY]"));
+        populateField(By.name("email"),emailAddress);
+        populateField(By.name("phone"),"+123456789");
+        populateField(By.name("password"),password);
+        populateField(By.name("confirmed_password"),password);
+        click(By.name("create_account"));
     }
 
     private void logout() {
-        findElement(By.linkText("Logout")).click();
+        click(By.linkText("Logout"));
     }
 
     private void login(String emailAddress, String password) {
-        findElement(By.name("email")).sendKeys(emailAddress);
-        findElement(By.name("password")).sendKeys(password);
-        findElement(By.name("login")).click();
+        populateField(By.name("email"),emailAddress);
+        populateField(By.name("password"),password);
+        click(By.name("login"));
     }
 
     @After

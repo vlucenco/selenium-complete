@@ -33,4 +33,8 @@ class TestBase {
     List<WebElement> findElements(By locator) {
         return driver.findElements(locator);
     }
+
+    void populateField(By fieldLocator, String input) {
+        findElement(fieldLocator).sendKeys(input);
+    }
 }
