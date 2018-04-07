@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+import java.util.Set;
 
 class TestBase {
 
@@ -46,5 +47,11 @@ class TestBase {
     void populateField(By fieldLocator, String input) {
         findElement(fieldLocator).clear();
         findElement(fieldLocator).sendKeys(input);
+    }
+
+    String anyWindowsOtherThan(Set<String> oldWindows) {
+        Set<String> handles = driver.getWindowHandles();
+        handles.removeAll(oldWindows);
+        return handles.size() > 0 ? handles.iterator().next() : null;
     }
 }
