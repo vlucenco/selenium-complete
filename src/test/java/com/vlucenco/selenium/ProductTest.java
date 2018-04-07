@@ -11,7 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
-public class LiteCartTest extends TestBase {
+public class ProductTest extends TestBase {
 
     private static final By regularPrice = By.cssSelector("s[class=regular-price]");
     private static final By campaignPrice = By.cssSelector("strong[class=campaign-price]");
