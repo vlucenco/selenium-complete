@@ -1,26 +1,16 @@
 package com.vlucenco.selenium;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class CreateAccountTest extends TestBase {
 
     private String emailAddress;
     private String password = "password";
 
-    @Before
-    public void start() {
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 10);
-        driver.get("http://localhost/litecart");
-    }
-
     @Test
     public void testCreateAccount() {
+        driver.get("http://localhost/litecart");
         emailAddress = String.format("test+%d@test.com", System.currentTimeMillis());
         submitAccountCreationForm();
         logout();
@@ -54,11 +44,5 @@ public class CreateAccountTest extends TestBase {
         populateField(By.name("email"), emailAddress);
         populateField(By.name("password"), password);
         click(By.name("login"));
-    }
-
-    @After
-    public void stop() {
-        driver.quit();
-        driver = null;
     }
 }

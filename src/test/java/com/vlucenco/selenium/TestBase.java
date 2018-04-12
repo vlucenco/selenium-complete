@@ -1,9 +1,12 @@
 package com.vlucenco.selenium;
 
+import org.junit.After;
+import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
@@ -11,16 +14,42 @@ import java.util.Set;
 
 class TestBase {
 
-
+    private static ThreadLocal<WebDriver> tlDriver = new ThreadLocal<>();
     WebDriver driver;
     WebDriverWait wait;
 
+    @Before
+    public void start() {
+        if (tlDriver.get() != null) {
+            driver = tlDriver.get();
+            wait = new WebDriverWait(driver, 10);
+            return;
+        }
+
+        driver = new ChromeDriver();
+        tlDriver.set(driver);
+        wait = new WebDriverWait(driver, 10);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            driver.quit();
+            driver = null;
+        }));
+    }
+
+    @After
+    public void stop() {
+//        driver.quit();
+//        driver = null;
+    }
+
     void loginToAdminPanel() {
         driver.get("http://localhost/litecart/admin/");
-        findElement(By.name("username")).sendKeys("admin");
-        findElement(By.name("password")).sendKeys("admin");
-        findElement(By.name("login")).click();
-        wait.until(driver -> findElement(By.className("fa-sign-out")));
+        if (!isElementPresent(By.className("fa-sign-out"))) {
+            findElement(By.name("username")).sendKeys("admin");
+            findElement(By.name("password")).sendKeys("admin");
+            findElement(By.name("login")).click();
+            wait.until(driver -> findElement(By.className("fa-sign-out")));
+        }
     }
 
     void click(By locator) {

@@ -16,15 +16,15 @@ public class ProductTest extends TestBase {
     private static final By regularPrice = By.cssSelector("s[class=regular-price]");
     private static final By campaignPrice = By.cssSelector("strong[class=campaign-price]");
 
-    @Before
-    public void start() {
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 10);
-        driver.get("http://localhost/litecart");
-    }
+//    @Before
+//    public void start() {
+//        driver = new ChromeDriver();
+//        wait = new WebDriverWait(driver, 10);
+//    }
 
     @Test
     public void testEachProductHasSticker() {
+        driver.get("http://localhost/litecart");
         List<WebElement> products = findElements(By.className("product"));
         for (WebElement product : products) {
             Assert.assertTrue("Number of stickers for the product not equal to 1",
@@ -34,6 +34,7 @@ public class ProductTest extends TestBase {
 
     @Test
     public void testSelectProductOnMainPageLeadsToCorrectProductPage() {
+        driver.get("http://localhost/litecart");
         // Verifications on Main Page
         WebElement product = findElement(By.cssSelector("#box-campaigns li"));
 
@@ -88,9 +89,9 @@ public class ProductTest extends TestBase {
         return colorStyle.replaceAll("\\D", " ").trim().split("\\s+");
     }
 
-    @After
-    public void stop() {
-        driver.quit();
-        driver = null;
-    }
+//    @After
+//    public void stop() {
+//        driver.quit();
+//        driver = null;
+//    }
 }

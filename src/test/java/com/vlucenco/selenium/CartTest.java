@@ -1,26 +1,16 @@
 package com.vlucenco.selenium;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class CartTest extends TestBase {
 
-    @Before
-    public void start() {
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 10);
-        driver.get("http://localhost/litecart");
-    }
-
     @Test
-    public void testAddProductToCartThenRemoveItFromCart() throws InterruptedException {
+    public void testAddProductToCartThenRemoveItFromCart() {
+        driver.get("http://localhost/litecart");
         addProductsToCart(3);
         goToCart();
         removeAllProductsFromCart();
@@ -64,11 +54,5 @@ public class CartTest extends TestBase {
     private void removeProduct() {
         wait.until(visibilityOfElementLocated(By.name("remove_cart_item"))).click();
         wait.until(stalenessOf(findElement(By.className("dataTable"))));
-    }
-
-    @After
-    public void stop() {
-        driver.quit();
-        driver = null;
     }
 }

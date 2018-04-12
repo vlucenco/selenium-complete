@@ -1,13 +1,9 @@
 package com.vlucenco.selenium;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 
@@ -17,15 +13,9 @@ public class AddNewProductTest extends TestBase {
     private String imagePath;
     private String shortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sollicitudin ante massa, eget ornare libero porta congue.";
 
-    @Before
-    public void start() {
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 10);
-        loginToAdminPanel();
-    }
-
     @Test
     public void testAddNewProduct() {
+        loginToAdminPanel();
         productName = String.valueOf(System.currentTimeMillis());
         String basePath = new File("").getAbsolutePath();
         imagePath = basePath + "/src/test/resources/white-rubber-duck.jpeg";
@@ -75,11 +65,5 @@ public class AddNewProductTest extends TestBase {
         click(By.xpath("//span[contains(text(),'Catalog')]"));
         click(By.xpath("//a[contains(text(),'Rubber Ducks')]"));
         Assert.assertTrue(findElement(By.linkText(productName)).isDisplayed());
-    }
-
-    @After
-    public void stop() {
-        driver.quit();
-        driver = null;
     }
 }

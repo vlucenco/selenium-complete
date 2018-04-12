@@ -1,14 +1,10 @@
 package com.vlucenco.selenium;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,16 +18,9 @@ public class AdminPanelTest extends TestBase {
     private By menuItemLocator = By.id("app-");
     private By subMenuItemLocator = By.cssSelector("#app-.selected li");
 
-
-    @Before
-    public void start() {
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 10);
-        loginToAdminPanel();
-    }
-
     @Test
     public void testHeadersOnAdminPages() {
+        loginToAdminPanel();
         for (int menuIndex = 0; menuIndex < findElements(menuItemLocator).size(); menuIndex++) {
             checkPageHeader(menuIndex, menuItemLocator);
 
@@ -49,6 +38,7 @@ public class AdminPanelTest extends TestBase {
 
     @Test
     public void testCountriesAndTheirZonesAreSortedAlphabetically() {
+        loginToAdminPanel();
         List<WebElement> countryRows = goToPageAndGetCountries(COUNTRIES_PAGE_URL, By.xpath("//*[@class='row']"));
         List<String> actuallySortedCountries = new ArrayList<>();
 
@@ -69,6 +59,7 @@ public class AdminPanelTest extends TestBase {
 
     @Test
     public void testGeoZonesAreSortedAlphabetically() {
+        loginToAdminPanel();
         List<WebElement> countries;
         int i = 0;
         do {
@@ -105,11 +96,5 @@ public class AdminPanelTest extends TestBase {
                 .stream().sorted().collect(Collectors.toList());
         Assert.assertEquals("Elements sorting not alphabetical",
                 expectedAlphabeticallySortedElements, actuallySortedElements);
-    }
-
-    @After
-    public void stop() {
-        driver.quit();
-        driver = null;
     }
 }
