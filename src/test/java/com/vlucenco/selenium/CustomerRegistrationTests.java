@@ -1,29 +1,27 @@
 package com.vlucenco.selenium;
 
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Select;
 
+@RunWith(DataProviderRunner.class)
 public class CustomerRegistrationTests extends TestBase {
 
-    private Customer customer;
-
     @Test
-    public void testRegisterCustomer() {
-        customer = Customer.newEntity()
-                .withFirstname("Vitali").withLastname("Lucenco").withPhone("+123456789")
-                .withAddress("Address 1").withCity("New York").withPostcode("12345")
-                .withCountry("United States").withZone("NY").withEmail(String.format("test+%d@test.com", System.currentTimeMillis()))
-                .withPassword("drowssap").build();
+    @UseDataProvider(value = "validCustomers", location = DataProviders.class)
+    public void testRegisterCustomer(Customer customer) {
         driver.get("http://localhost/litecart/en/create_account");
-        submitAccountCreationForm();
+        submitAccountCreationForm(customer);
         logout();
         login(customer.getEmail(), customer.getPassword());
         logout();
     }
 
-    private void submitAccountCreationForm() {
+    private void submitAccountCreationForm(Customer customer) {
         populateField(By.name("firstname"), customer.getFirstname());
         populateField(By.name("lastname"), customer.getLastname());
         populateField(By.name("address1"), customer.getAddress());
