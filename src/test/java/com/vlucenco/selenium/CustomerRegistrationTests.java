@@ -19,31 +19,31 @@ public class CustomerRegistrationTests extends TestBase {
     @Test
     @UseDataProvider(value = "validCustomers", location = DataProviders.class)
     public void testRegisterCustomer(Customer customer) {
-        loginToAdminPanel();
+        Set<String> oldIds = getCustomerIds();
 
-        driver.get("http://localhost/litecart/admin/?app=customers&doc=customers");
-        Set<String> oldIds = driver.findElements(By.cssSelector("table.dataTable tr.row")).stream()
-                .map(e -> e.findElements(By.tagName("td")).get(2).getText())
-                .collect(toSet());
-
-        driver.get("http://localhost/litecart/en/create_account");
         submitAccountCreationForm(customer);
 
-        driver.get("http://localhost/litecart/admin/?app=customers&doc=customers");
-        Set<String> newIds = findElements(By.cssSelector("table.dataTable tr.row")).stream()
-                .map(e -> e.findElements(By.tagName("td")).get(2).getText())
-                .collect(toSet());
+        Set<String> newIds = getCustomerIds();
 
         assertTrue(newIds.containsAll(oldIds));
         assertTrue(newIds.size() == oldIds.size() + 1);
 
-        driver.get("http://localhost/litecart");
-        logout();
-        login(customer.getEmail(), customer.getPassword());
-        logout();
+        customerLogout();
+        customerLogin(customer.getEmail(), customer.getPassword());
+        customerLogout();
+    }
+
+    private Set<String> getCustomerIds() {
+        loginToAdminPanel();
+
+        driver.get("http://localhost/litecart/admin/?app=customers&doc=customers");
+        return driver.findElements(By.cssSelector("table.dataTable tr.row")).stream()
+                .map(e -> e.findElements(By.tagName("td")).get(2).getText())
+                .collect(toSet());
     }
 
     private void submitAccountCreationForm(Customer customer) {
+        driver.get("http://localhost/litecart/en/create_account");
         populateField(By.name("firstname"), customer.getFirstname());
         populateField(By.name("lastname"), customer.getLastname());
         populateField(By.name("address1"), customer.getAddress());
@@ -63,11 +63,12 @@ public class CustomerRegistrationTests extends TestBase {
         click(By.name("create_account"));
     }
 
-    private void logout() {
+    private void customerLogout() {
+        driver.get("http://localhost/litecart");
         click(By.linkText("Logout"));
     }
 
-    private void login(String emailAddress, String password) {
+    private void customerLogin(String emailAddress, String password) {
         populateField(By.name("email"), emailAddress);
         populateField(By.name("password"), password);
         click(By.name("login"));
