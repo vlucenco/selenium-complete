@@ -8,14 +8,36 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Select;
 
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
+import static org.junit.Assert.assertTrue;
+
 @RunWith(DataProviderRunner.class)
 public class CustomerRegistrationTests extends TestBase {
 
     @Test
     @UseDataProvider(value = "validCustomers", location = DataProviders.class)
     public void testRegisterCustomer(Customer customer) {
+        loginToAdminPanel();
+
+        driver.get("http://localhost/litecart/admin/?app=customers&doc=customers");
+        Set<String> oldIds = driver.findElements(By.cssSelector("table.dataTable tr.row")).stream()
+                .map(e -> e.findElements(By.tagName("td")).get(2).getText())
+                .collect(toSet());
+
         driver.get("http://localhost/litecart/en/create_account");
         submitAccountCreationForm(customer);
+
+        driver.get("http://localhost/litecart/admin/?app=customers&doc=customers");
+        Set<String> newIds = findElements(By.cssSelector("table.dataTable tr.row")).stream()
+                .map(e -> e.findElements(By.tagName("td")).get(2).getText())
+                .collect(toSet());
+
+        assertTrue(newIds.containsAll(oldIds));
+        assertTrue(newIds.size() == oldIds.size() + 1);
+
+        driver.get("http://localhost/litecart");
         logout();
         login(customer.getEmail(), customer.getPassword());
         logout();
