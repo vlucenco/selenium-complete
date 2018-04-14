@@ -1,13 +1,9 @@
 package com.vlucenco.selenium;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
@@ -15,12 +11,6 @@ public class ProductTest extends TestBase {
 
     private static final By regularPrice = By.cssSelector("s[class=regular-price]");
     private static final By campaignPrice = By.cssSelector("strong[class=campaign-price]");
-
-//    @Before
-//    public void start() {
-//        driver = new ChromeDriver();
-//        wait = new WebDriverWait(driver, 10);
-//    }
 
     @Test
     public void testEachProductHasSticker() {
@@ -88,10 +78,4 @@ public class ProductTest extends TestBase {
         String colorStyle = element.getCssValue("color");
         return colorStyle.replaceAll("\\D", " ").trim().split("\\s+");
     }
-
-//    @After
-//    public void stop() {
-//        driver.quit();
-//        driver = null;
-//    }
 }
