@@ -1,4 +1,4 @@
-package com.vlucenco.selenium;
+package com.vlucenco.selenium.tests;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -11,13 +11,13 @@ public class AdminPanelTest extends TestBase {
 
     @Test
     public void testHeadersOnAdminPages() {
-        app.loginToAdminPanel();
+        app.admin().loginToAdminPanel();
         app.verifyHeadersOnAllAdminPages();
     }
 
     @Test
     public void testCountriesAndTheirZonesAreSortedAlphabetically() {
-        app.loginToAdminPanel();
+        app.admin().loginToAdminPanel();
         List<WebElement> countryRows = app.goToPageAndGetCountries(app.COUNTRIES_PAGE_URL, By.xpath("//*[@class='row']"));
         List<String> actuallySortedCountries = new ArrayList<>();
 
@@ -38,7 +38,7 @@ public class AdminPanelTest extends TestBase {
 
     @Test
     public void testGeoZonesAreSortedAlphabetically() {
-        app.loginToAdminPanel();
+        app.admin().loginToAdminPanel();
         List<WebElement> countries;
         int i = 0;
         do {

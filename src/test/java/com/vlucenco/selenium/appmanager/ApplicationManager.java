@@ -1,10 +1,9 @@
-package com.vlucenco.selenium;
+package com.vlucenco.selenium.appmanager;
 
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.logging.LogEntry;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
@@ -12,65 +11,50 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toSet;
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
-public class Application {
+public class ApplicationManager {
 
-    private WebDriverWait wait;
-    private WebDriver driver;
+    WebDriverWait wait;
+    WebDriver driver;
 
-    public Application() {
+    private ProductHelper productHelper;
+    private CustomerHelper customerHelper;
+    private AdminHelper adminHelper;
+    private NavigationHelper navigationHelper;
+
+    public ApplicationManager() {
         driver = new ChromeDriver();
         wait = new WebDriverWait(driver, 10);
     }
 
-    public void quit() {
+    public void init() {
+        productHelper = new ProductHelper(this);
+        customerHelper = new CustomerHelper(this);
+        adminHelper = new AdminHelper(this);
+        navigationHelper = new NavigationHelper(this);
+    }
+
+    public void stop() {
         driver.quit();
     }
 
-    /* ----------------CustomerRegistrationTests-----------------*/
-
-    public Set<String> getCustomerIds() {
-        loginToAdminPanel();
-
-        driver.get("http://localhost/litecart/admin/?app=customers&doc=customers");
-        return driver.findElements(By.cssSelector("table.dataTable tr.row")).stream()
-                .map(e -> e.findElements(By.tagName("td")).get(2).getText())
-                .collect(toSet());
+    public ProductHelper productHelper() {
+        return productHelper;
     }
 
-    public void submitAccountCreationForm(Customer customer) {
-        driver.get("http://localhost/litecart/en/create_account");
-        populateField(By.name("firstname"), customer.getFirstname());
-        populateField(By.name("lastname"), customer.getLastname());
-        populateField(By.name("address1"), customer.getAddress());
-        populateField(By.name("postcode"), customer.getPostcode());
-        populateField(By.name("city"), customer.getCity());
-
-        click(By.className("selection"));
-        click(By.xpath(String.format("//li[contains(text(), '%s')]", customer.getCountry())));
-        wait.until((WebDriver d) -> d.findElement(
-                By.cssSelector(String.format("select[name=zone_code] option[value=%s]", customer.getZone()))));
-        new Select(driver.findElement(By.cssSelector("select[name=zone_code]"))).selectByValue(customer.getZone());
-
-        populateField(By.name("email"), customer.getEmail());
-        populateField(By.name("phone"), customer.getPhone());
-        populateField(By.name("password"), customer.getPassword());
-        populateField(By.name("confirmed_password"), customer.getPassword());
-        click(By.name("create_account"));
+    public CustomerHelper customer() {
+        return customerHelper;
     }
 
-    public void customerLogout() {
-        driver.get("http://localhost/litecart");
-        click(By.linkText("Logout"));
+    public AdminHelper admin() {
+        return adminHelper;
     }
 
-    public void customerLogin(String emailAddress, String password) {
-        populateField(By.name("email"), emailAddress);
-        populateField(By.name("password"), password);
-        click(By.name("login"));
+    public NavigationHelper goTo() {
+        return navigationHelper;
     }
+
     /* ----------------AdminPanelTest-----------------*/
 
     public final String COUNTRIES_PAGE_URL = "http://localhost/litecart/admin/?app=countries&doc=countries";
@@ -187,46 +171,6 @@ public class Application {
 
     /* ---------------CartTest------------------*/
 
-    public void addProductsToCart(Integer numOfProducts) {
-        driver.get("http://localhost/litecart");
-        for (int i = 0; i < numOfProducts; i++) {
-            addProduct();
-        }
-    }
-
-    private void addProduct() {
-        click(By.cssSelector("#box-most-popular li"));
-        WebElement cartQuantityElement = findElement(By.cssSelector("span[class='quantity']"));
-        Integer cartQuantity = Integer.valueOf(cartQuantityElement.getText());
-        selectSizeIfRequired();
-        click(By.name("add_cart_product"));
-        wait.until(textToBePresentInElement(cartQuantityElement, String.valueOf(cartQuantity + 1)));
-        click(By.className("fa-home"));
-    }
-
-    private void selectSizeIfRequired() {
-        By sizeOptionLocator = By.xpath("//select[@name='options[Size]']");
-        if (isElementPresent(sizeOptionLocator)) {
-            findElement(sizeOptionLocator).findElement(By.xpath("./option[2]")).click();
-        }
-    }
-
-    public void goToCart() {
-        click(By.linkText("Checkout »"));
-        click(By.cssSelector(".shortcut"));
-    }
-
-    public void removeAllProductsFromCart() {
-        Integer productsCount = findElements(By.cssSelector(".shortcuts li")).size();
-        for (int i = 0; i < productsCount; i++) {
-            removeProduct();
-        }
-    }
-
-    private void removeProduct() {
-        wait.until(visibilityOfElementLocated(By.name("remove_cart_item"))).click();
-        wait.until(stalenessOf(findElement(By.className("dataTable"))));
-    }
 
     /* ---------------ExternalLinksTest------------------*/
 
@@ -322,16 +266,6 @@ public class Application {
     }
 
     /* ---------------------------------*/
-
-    void loginToAdminPanel() {
-        driver.get("http://localhost/litecart/admin/");
-        if (!isElementPresent(By.className("fa-sign-out"))) {
-            findElement(By.name("username")).sendKeys("admin");
-            findElement(By.name("password")).sendKeys("admin");
-            findElement(By.name("login")).click();
-            wait.until(driver -> findElement(By.className("fa-sign-out")));
-        }
-    }
 
     void click(By locator) {
         driver.findElement(locator).click();

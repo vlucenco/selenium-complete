@@ -1,7 +1,8 @@
-package com.vlucenco.selenium;
+package com.vlucenco.selenium.tests;
 
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.vlucenco.selenium.model.Customer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -15,17 +16,18 @@ public class CustomerRegistrationTests extends TestBase {
     @Test
     @UseDataProvider(value = "validCustomers", location = DataProviders.class)
     public void testRegisterCustomer(Customer customer) {
-        Set<String> oldIds = app.getCustomerIds();
+        Set<String> oldIds = app.admin().getCustomerIds();
 
-        app.submitAccountCreationForm(customer);
+        app.goTo().customerRegistrationPage();
+        app.customer().submitAccountCreationForm(customer);
 
-        Set<String> newIds = app.getCustomerIds();
+        Set<String> newIds = app.admin().getCustomerIds();
 
         assertTrue(newIds.containsAll(oldIds));
         assertTrue(newIds.size() == oldIds.size() + 1);
 
-        app.customerLogout();
-        app.customerLogin(customer.getEmail(), customer.getPassword());
-        app.customerLogout();
+        app.customer().logout();
+        app.customer().login(customer.getEmail(), customer.getPassword());
+        app.customer().logout();
     }
 }

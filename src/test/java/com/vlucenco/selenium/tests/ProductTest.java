@@ -1,4 +1,4 @@
-package com.vlucenco.selenium;
+package com.vlucenco.selenium.tests;
 
 import org.junit.Test;
 

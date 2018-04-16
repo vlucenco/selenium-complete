@@ -1,4 +1,4 @@
-package com.vlucenco.selenium;
+package com.vlucenco.selenium.tests;
 
 import org.junit.Test;
 
@@ -9,7 +9,7 @@ public class AddNewProductTest extends TestBase {
 
     @Test
     public void testAddNewProduct() {
-        app.loginToAdminPanel();
+        app.admin().loginToAdminPanel();
         app.productName = String.valueOf(System.currentTimeMillis());
         String basePath = new File("").getAbsolutePath();
         app.imagePath = basePath + "/src/test/resources/white-rubber-duck.jpeg";

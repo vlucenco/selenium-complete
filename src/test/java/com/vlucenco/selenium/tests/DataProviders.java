@@ -1,6 +1,7 @@
-package com.vlucenco.selenium;
+package com.vlucenco.selenium.tests;
 
 import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.vlucenco.selenium.model.Customer;
 
 public class DataProviders {
 
