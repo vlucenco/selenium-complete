@@ -61,6 +61,11 @@ public class Customer {
         private Builder() {
         }
 
+        public Customer build() {
+            return Customer.this;
+        }
+
+
         public Builder withFirstname(String firstname) {
             Customer.this.firstname = firstname;
             return this;
@@ -109,10 +114,6 @@ public class Customer {
         public Builder withPassword(String password) {
             Customer.this.password = password;
             return this;
-        }
-
-        public Customer build() {
-            return Customer.this;
         }
     }
 }

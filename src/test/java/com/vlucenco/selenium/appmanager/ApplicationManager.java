@@ -1,7 +1,9 @@
 package com.vlucenco.selenium.appmanager;
 
 import org.junit.Assert;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -37,7 +39,7 @@ public class ApplicationManager {
         driver.quit();
     }
 
-    public ProductHelper productHelper() {
+    public ProductHelper product() {
         return productHelper;
     }
 
@@ -51,51 +53,6 @@ public class ApplicationManager {
 
     public NavigationHelper goTo() {
         return navigationHelper;
-    }
-
-    /*-----------------AddNewProductTest-----------------*/
-
-    public String productName;
-    public String imagePath;
-    private String shortDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sollicitudin ante massa, eget ornare libero porta congue.";
-
-    public void goToAddNewProductPage() {
-        click(By.xpath("//span[contains(text(),'Catalog')]"));
-        click(By.linkText("Add New Product"));
-    }
-
-    public void populateGeneralTab() {
-        click(By.xpath("//label[contains(text(),'Enabled')]"));
-        populateField(By.name("name[en]"), productName);
-        populateField(By.name("code"), "wd001");
-        findElement(By.cssSelector("[data-name='Root']")).click();
-        findElement(By.cssSelector("[data-name='Rubber Ducks']")).click();
-        populateField(By.name("quantity"), "50.00");
-        populateField(By.name("new_images[]"), imagePath);
-    }
-
-    public void populateInformationTab() {
-        click(By.xpath("//a[contains(text(), 'Information')]"));
-        click(By.name("manufacturer_id"));
-        click(By.cssSelector("select[name=manufacturer_id] option[value='1']"));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1]",
-                findElement(By.cssSelector("[name='short_description[en]']")), shortDescription);
-    }
-
-    public void populatePricesTab() {
-        click(By.xpath("//a[contains(text(), 'Prices')]"));
-        populateField(By.name("purchase_price"), "100");
-        populateField(By.name("prices[USD]"), "20.000");
-    }
-
-    public void saveProduct() {
-        click(By.name("save"));
-    }
-
-    public void verifyProductWasAddedToCatalog() {
-        click(By.xpath("//span[contains(text(),'Catalog')]"));
-        click(By.xpath("//a[contains(text(),'Rubber Ducks')]"));
-        Assert.assertTrue(findElement(By.linkText(productName)).isDisplayed());
     }
 
     /* --------------BrowserLogsTest-------------------*/
@@ -219,11 +176,6 @@ public class ApplicationManager {
 
     private List<WebElement> findElements(By locator) {
         return driver.findElements(locator);
-    }
-
-    private void populateField(By fieldLocator, String input) {
-        findElement(fieldLocator).clear();
-        findElement(fieldLocator).sendKeys(input);
     }
 
     private String anyWindowsOtherThan(Set<String> oldWindows) {

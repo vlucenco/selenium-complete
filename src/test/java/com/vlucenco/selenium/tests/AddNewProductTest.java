@@ -1,24 +1,23 @@
 package com.vlucenco.selenium.tests;
 
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import com.vlucenco.selenium.model.Product;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import java.io.File;
-
+@RunWith(DataProviderRunner.class)
 public class AddNewProductTest extends TestBase {
 
-
     @Test
-    public void testAddNewProduct() {
+    @UseDataProvider(value = "products", location = DataProviders.class)
+    public void testAddNewProduct(Product product) {
         app.admin().loginToAdminPanel();
-        app.productName = String.valueOf(System.currentTimeMillis());
-        String basePath = new File("").getAbsolutePath();
-        app.imagePath = basePath + "/src/test/resources/white-rubber-duck.jpeg";
-
-        app.goToAddNewProductPage();
-        app.populateGeneralTab();
-        app.populateInformationTab();
-        app.populatePricesTab();
-        app.saveProduct();
-        app.verifyProductWasAddedToCatalog();
+        app.goTo().newProductPage();
+        app.product().populateGeneralTab(product);
+        app.product().populateInformationTab(product);
+        app.product().populatePricesTab(product);
+        app.product().saveProduct();
+        app.product().verifyProductWasAddedToCatalog(product);
     }
 }

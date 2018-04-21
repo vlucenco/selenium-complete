@@ -21,4 +21,8 @@ public class NavigationHelper extends HelperBase{
     public void geoZonesAdminPage() {
         geoZonesAdminPage.open();
     }
+
+    public void newProductPage() {
+        newProductPage.open();
+    }
 }

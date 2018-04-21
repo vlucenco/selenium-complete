@@ -28,6 +28,8 @@ public class HelperBase {
     CountriesAdminPage countriesAdminPage;
     AdminHomePage adminHomePage;
     GeoZonesAdminPage geoZonesAdminPage;
+    NewProductPage newProductPage;
+    AdminCatalogPage adminCatalogPage;
 
 
     HelperBase(ApplicationManager app) {
@@ -44,6 +46,8 @@ public class HelperBase {
         countriesAdminPage = new CountriesAdminPage(driver);
         adminHomePage = new AdminHomePage(driver);
         geoZonesAdminPage = new GeoZonesAdminPage(driver);
+        newProductPage = new NewProductPage(driver);
+        adminCatalogPage = new AdminCatalogPage(driver);
     }
 
     void click(By locator) {
