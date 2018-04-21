@@ -6,10 +6,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
@@ -24,11 +22,11 @@ public class ApplicationManager {
     private NavigationHelper navigationHelper;
 
     public ApplicationManager() {
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 10);
     }
 
     public void init() {
+        driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, 10);
         productHelper = new ProductHelper(this);
         customerHelper = new CustomerHelper(this);
         adminHelper = new AdminHelper(this);
@@ -53,58 +51,6 @@ public class ApplicationManager {
 
     public NavigationHelper goTo() {
         return navigationHelper;
-    }
-
-    /* ----------------AdminPanelTest-----------------*/
-
-    public final String COUNTRIES_PAGE_URL = "http://localhost/litecart/admin/?app=countries&doc=countries";
-    public final String GEO_ZONES_PAGE_URL = "http://localhost/litecart/admin/?app=geo_zones&doc=geo_zones";
-
-    private By menuItemLocator = By.id("app-");
-    private By subMenuItemLocator = By.cssSelector("#app-.selected li");
-
-    public void verifyHeadersOnAllAdminPages() {
-        for (int menuIndex = 0; menuIndex < findElements(menuItemLocator).size(); menuIndex++) {
-            checkPageHeader(menuIndex, menuItemLocator);
-
-            for (int subMenuIndex = 0; subMenuIndex < findElements(subMenuItemLocator).size(); subMenuIndex++) {
-                checkPageHeader(subMenuIndex, subMenuItemLocator);
-            }
-        }
-    }
-
-    private void checkPageHeader(int index, By locator) {
-        List<WebElement> elements = findElements(locator);
-        elements.get(index).click();
-        Assert.assertTrue(findElement(By.tagName("h1")).isDisplayed());
-    }
-
-    public List<WebElement> goToPageAndGetCountries(String page, By locator) {
-        driver.get(page);
-        return findElements(locator);
-    }
-
-    public boolean countryHasZones(WebElement element) {
-        try {
-            int zonesNum = Integer.parseInt(element.findElement(By.xpath("./td[6]")).getText());
-            return zonesNum > 0;
-        } catch (NoSuchElementException e) {
-            return false;
-        }
-    }
-
-    public void getCountryZonesAndVerifySorting(By locator) {
-        List<WebElement> zones = findElements(locator);
-        List<String> actuallySortedZones = new ArrayList<>();
-        zones.forEach(zone -> actuallySortedZones.add(zone.getText()));
-        verifyCollectionSorted(actuallySortedZones);
-    }
-
-    public void verifyCollectionSorted(List<String> actuallySortedElements) {
-        List<String> expectedAlphabeticallySortedElements = new ArrayList<>(actuallySortedElements)
-                .stream().sorted().collect(Collectors.toList());
-        Assert.assertEquals("Elements sorting not alphabetical",
-                expectedAlphabeticallySortedElements, actuallySortedElements);
     }
 
     /*-----------------AddNewProductTest-----------------*/
@@ -169,11 +115,7 @@ public class ApplicationManager {
         }
     }
 
-    /* ---------------CartTest------------------*/
-
-
     /* ---------------ExternalLinksTest------------------*/
-
 
     public void verifyExternalLinksOpenInNewWindow() {
         click(By.linkText("Countries"));
@@ -267,33 +209,24 @@ public class ApplicationManager {
 
     /* ---------------------------------*/
 
-    void click(By locator) {
+    private void click(By locator) {
         driver.findElement(locator).click();
     }
 
-    WebElement findElement(By locator) {
+    private WebElement findElement(By locator) {
         return driver.findElement(locator);
     }
 
-    List<WebElement> findElements(By locator) {
+    private List<WebElement> findElements(By locator) {
         return driver.findElements(locator);
     }
 
-    boolean isElementPresent(By locator) {
-        try {
-            findElement(locator);
-            return true;
-        } catch (NoSuchElementException ex) {
-            return false;
-        }
-    }
-
-    void populateField(By fieldLocator, String input) {
+    private void populateField(By fieldLocator, String input) {
         findElement(fieldLocator).clear();
         findElement(fieldLocator).sendKeys(input);
     }
 
-    String anyWindowsOtherThan(Set<String> oldWindows) {
+    private String anyWindowsOtherThan(Set<String> oldWindows) {
         Set<String> handles = driver.getWindowHandles();
         handles.removeAll(oldWindows);
         return handles.size() > 0 ? handles.iterator().next() : null;

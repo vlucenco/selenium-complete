@@ -2,7 +2,7 @@ package com.vlucenco.selenium.appmanager;
 
 public class NavigationHelper extends HelperBase{
 
-    public NavigationHelper(ApplicationManager app) {
+    NavigationHelper(ApplicationManager app) {
         super(app);
     }
 
@@ -12,5 +12,13 @@ public class NavigationHelper extends HelperBase{
 
     public void customerRegistrationPage() {
         registrationPage.open();
+    }
+
+    public void countriesAdminPage() {
+        countriesAdminPage.open();
+    }
+
+    public void geoZonesAdminPage() {
+        geoZonesAdminPage.open();
     }
 }

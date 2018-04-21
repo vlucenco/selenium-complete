@@ -1,7 +1,6 @@
 package com.vlucenco.selenium.tests;
 
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.ArrayList;
@@ -12,28 +11,27 @@ public class AdminPanelTest extends TestBase {
     @Test
     public void testHeadersOnAdminPages() {
         app.admin().loginToAdminPanel();
-        app.verifyHeadersOnAllAdminPages();
+        app.admin().verifyHeadersOnAllAdminPages();
     }
 
     @Test
     public void testCountriesAndTheirZonesAreSortedAlphabetically() {
         app.admin().loginToAdminPanel();
-        List<WebElement> countryRows = app.goToPageAndGetCountries(app.COUNTRIES_PAGE_URL, By.xpath("//*[@class='row']"));
+        List<WebElement> countryRows = app.admin().getAllCountries();
         List<String> actuallySortedCountries = new ArrayList<>();
 
         for (int row = 0; row < countryRows.size(); row++) {
-            if (app.countryHasZones(countryRows.get(row))) {
-                countryRows.get(row).findElement(By.tagName("a")).click();
-                app.getCountryZonesAndVerifySorting(By.xpath("//td[3]/input[@type='hidden']/.."));
+            WebElement country = countryRows.get(row);
+            if (app.admin().countryHasZones(country)) {
+                app.admin().verifyCountryZonesSorting(country);
 
-                countryRows = app.goToPageAndGetCountries(app.COUNTRIES_PAGE_URL, By.xpath("//*[@class='row']"));
+                countryRows = app.admin().getAllCountries();
             } else {
-                String countryName = countryRows.get(row).findElement(By.xpath("./td[5]")).getText();
-                actuallySortedCountries.add(countryName);
+                actuallySortedCountries.add(country.getText());
             }
         }
 
-        app.verifyCollectionSorted(actuallySortedCountries);
+        app.admin().verifyCountriesSorting(actuallySortedCountries);
     }
 
     @Test
@@ -42,9 +40,8 @@ public class AdminPanelTest extends TestBase {
         List<WebElement> countries;
         int i = 0;
         do {
-            countries = app.goToPageAndGetCountries(app.GEO_ZONES_PAGE_URL, By.xpath("//td[3]/a"));
-            countries.get(i).click();
-            app.getCountryZonesAndVerifySorting(By.xpath("//td[3]/select/option[@selected]"));
+            countries = app.admin().getCountriesWithGeoZones();
+            app.admin().verifyGeoZonesSorting(countries.get(i));
             i++;
         } while (i < countries.size());
     }
